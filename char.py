@@ -42,11 +42,11 @@ class Dataset:
 
 class Network:
 
-    h1 = 300
-    h2 = 50
+    h1 = 500
+    h2 = 300
 
-    def __init__(self, data=None):
-        if data:
+    def __init__(self, params=None):
+        if params:
             pass
         else:
             self.M1 = rng.normal(0, (2/784)**0.5, (Network.h1, 784))
@@ -78,8 +78,8 @@ def softmaxfn(vec):
 
 class Teacher:
     
-    step = 0.005
-    handful = 10
+    step = 0.01
+    handful = 7
 
     def __init__(self, model, dataset):
         self.train_images, self.train_labels = dataset.train_images, dataset.train_labels
@@ -152,7 +152,16 @@ dataset.preprocess_images()
 model = Network()
 teach = Teacher(model, dataset)
 
-for i in range(3):
+for i in range(5):
     teach.train_epoch()
+
+print("completed training")
+correct = 0
+
+for i in range(dataset.test_images.shape[0]):
+    if np.argmax(model.run(dataset.test_images[i])) == dataset.test_labels[i]:
+        correct += 1
+
+print(f'of the numbers in the testing dataset, {correct} were classified correctly.')
 
 # initialize weights in the neural network using random drawings from a normal distribution with mean 0 and variance 2/784
